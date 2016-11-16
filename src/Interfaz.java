@@ -225,7 +225,7 @@ public class Interfaz extends javax.swing.JFrame {
                         .addComponent(jButton5)
                         .addGap(40, 40, 40)
                         .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(111, 111, 111))))
         );
@@ -312,6 +312,8 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        AgregarHorarios add = new AgregarHorarios();
+        add.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void SelecDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelecDiaActionPerformed
