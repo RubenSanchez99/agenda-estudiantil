@@ -179,6 +179,11 @@ public class Interfaz extends javax.swing.JFrame {
         jTable2.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         jButton5.setText("+");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("-");
 
@@ -256,6 +261,11 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane2.setViewportView(jTable3);
 
         jButton3.setText("+");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton4.setText("-");
 
@@ -314,6 +324,7 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
         AgregarHorarios add = new AgregarHorarios();
         add.setVisible(true);
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void SelecDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelecDiaActionPerformed
@@ -326,13 +337,26 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         // TODO add your handling code here:
-        Promedios abrir = new Promedios();
-        abrir.setVisible(true);
+        Promedios add = new Promedios();
+        add.setVisible(true);
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton7MouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        AgregarMaterias add = new AgregarMaterias();
+        add.setVisible(true);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        AgregarTareas add = new AgregarTareas();
+        add.setVisible(true);
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
