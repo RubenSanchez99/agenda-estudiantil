@@ -3,15 +3,16 @@
 package agendaestudiantil;
 
 public class AgendaEstudiantil {
+    // Ejemplos de uso de las funciones read y write
 
     /*DB.write("H", "INSERT INTO agenda.materias (codigo, nombre, semestre, hora_inicio, hora_fin, dias, aula)"
             + "VALUES (?, ?, ?, ?, ?, ?, ?)",
             "POO", "Programación Orientada a Objetos", "1", "07:00", "09:00", "0101000", "103");
     */
     //DB.write(materia);
-        
     
-    public static void test() {
+    
+    /*public static void test() {
         final String insertMateriaQuery = "INSERT INTO agenda.materias (codigo, nombre, semestre, hora_inicio, hora_fin, dias, aula)"
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         
@@ -23,6 +24,6 @@ public class AgendaEstudiantil {
         
         Materia m = DB.read("ADMON");
         System.out.println(m);
-    }
+    }*/
     
 }

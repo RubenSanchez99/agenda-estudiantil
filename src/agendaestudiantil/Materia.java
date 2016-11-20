@@ -11,10 +11,12 @@ public class Materia {
     private int semestre;
     private Date hora_inicio;
     private Date hora_fin;
+    private String maestro;
     private boolean[] dias;
     private String aula;
 
-    public Materia(int id, String codigo, String nombre, int semestre, String hora_inicio, String hora_fin, boolean[] dias, String aula) {
+    public Materia(int id, String codigo, String nombre, int semestre, String hora_inicio,
+            String hora_fin, String maestro, boolean[] dias, String aula) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -25,8 +27,17 @@ public class Materia {
         } catch (ParseException ex) {
             System.out.println("Error en la hora");
         }
+        this.maestro = maestro;
         this.dias = dias;
         this.aula = aula;
+    }
+
+    public String getMaestro() {
+        return maestro;
+    }
+
+    public void setMaestro(String maestro) {
+        this.maestro = maestro;
     }
     
     public Materia() {
