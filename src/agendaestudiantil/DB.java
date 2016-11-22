@@ -17,11 +17,33 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 public class DB {
-    public static void write(Materia materia, String query) {
-        String dbURL = "jdbc:mysql://localhost:3306/agenda";
-        String username = "root";
-        String password = "admin";// Con toda la encriptación AES-1024
-        
+    static String dbURL = "jdbc:mysql://localhost:3306/agenda";
+    static String username = "root";
+    static String password = "admin";// Con toda la encriptación AES-1024
+    private static Connection conn;
+    
+    public static void conectar() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection(dbURL, username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void desconectar() {
+        try {
+            conn.close();
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static Connection getConnection() {
+        return conn;
+    }
+    
+    public static void write(Materia materia, String query) {        
         // Usamos un try-with-resources para abrir y cerrar la conexión automáticamente
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
             PreparedStatement statement = conn.prepareStatement(query);
@@ -37,19 +59,74 @@ public class DB {
             
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Se han escrito en la base de datos");
+                System.out.println("Se han guardado " + materia.getNombre() + " en la base de datos");
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
     
+    public static void write(Evaluacion ev, String query) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            PreparedStatement statement = conn.prepareStatement(query);
+            
+            statement.setString(1, ev.getMateria());
+            statement.setString(2, ev.getEvaluacion());
+            statement.setDouble(3, ev.getPorcentaje());
+            statement.setDouble(4, ev.getCalificacion());
+            statement.setDouble(5, ev.getCalificacionTotal());
+            
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se ha guardado " + ev.getEvaluacion() + " en la base de datos");
+            }
+            
+            setPromedio(ev.getMateria(), readPromedio(ev.getMateria()));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void write(Tarea t) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "INSERT INTO agenda.tareas (materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado)"
+                + " VALUES(?, ?, ?, ?, ?)";
+            PreparedStatement statement = conn.prepareStatement(query);
+            
+            statement.setString(1, t.getMateria());
+            statement.setString(2, t.getTarea());
+            statement.setDate(3, new java.sql.Date(t.getFechaEntrega().getTime()));
+            statement.setDate(4, new java.sql.Date(t.getFechaRecordatorio().getTime()));
+            statement.setBoolean(5, false);
+            
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se ha guardado " + t.getTarea() + " de " + t.getMateria() + " en la base de datos");
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static void setPromedio(String materia, double promedio) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "UPDATE agenda.materias SET promedio=? WHERE codigo=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            
+            statement.setDouble(1, promedio);
+            statement.setString(2, materia);
+            
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se han actualizado el promedio de " + materia);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
     
     public static void write(String... args) {
-        String dbURL = "jdbc:mysql://localhost:3306/agenda";
-        String username = "root";
-        String password = "admin";// Con toda la encriptación AES-1024
-        
         // Usamos un try-with-resources para abrir y cerrar la conexión automáticamente
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
             char mode = args[0].toUpperCase().charAt(0);
@@ -85,10 +162,43 @@ public class DB {
         }
     }
     
+    /*public static void writePromedio(String materia, double promedio) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "UPDATE promedio IN ";
+            
+            PreparedStatement statement = conn.prepareStatement(query);
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se han escrito en la base de datos");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    
+    }*/
+    
+    public static void createTable(String codigo) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "CREATE TABLE " + codigo + " ("
+                    + "id INT(11) NOT NULL AUTO_INCREMENT, " 
+                    + "evaluacion VARCHAR(32) NOT NULL," 
+                    + "porcentaje DOUBLE NOT NULL," 
+                    + "calificacion DOUBLE NOT NULL, " 
+                    + "calificacion_total DOUBLE NOT NULL,"
+                    + "PRIMARY KEY (id)" + ");";
+            
+            PreparedStatement statement = conn.prepareStatement(query);
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se han escrito en la base de datos");
+            }
+            System.out.println("Tabla " + codigo + " creada");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     public static Materia read(String codigo) {
-        String dbURL = "jdbc:mysql://localhost:3306/agenda";
-        String username = "root";
-        String password = "admin";// Con toda la encriptación AES-1024
         Materia m = new Materia();
         
         // Usamos un try-with-resources para abrir y cerrar la conexión automáticamente
@@ -123,11 +233,98 @@ public class DB {
         return m;
     }
     
-    public static DefaultTableModel buildTableModel(String query){
-        String dbURL = "jdbc:mysql://localhost:3306/agenda";
-        String username = "root";
-        String password = "admin";
+    public static String[] getAllMaterias() {
+        Vector<String> materias = new Vector<String>();
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "SELECT codigo FROM agenda.materias";
+                        
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            
+            int count = 0;
+            while(result.next()) {
+                materias.addElement(result.getString(1));
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
         
+        return materias.toArray(new String[materias.size()]);
+    }
+    
+    public static double readPromedio(String materia) {
+        double promedio = 0.0;
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "SELECT SUM(calificacion_total) FROM agenda.evaluaciones WHERE materia='" + materia + "'";
+            
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            
+            while(result.next()) {
+                promedio = result.getDouble(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return promedio;
+    }
+    
+    public static void delete(String codigo) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "DELETE FROM agenda.materias WHERE codigo=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, codigo);
+            
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Se eliminó " + codigo + " de la lista de materias");
+            }
+            query = "DELETE FROM agenda.evaluaciones WHERE codigo=?";
+            statement = conn.prepareStatement(query);
+            statement.setString(1, codigo);
+            
+            rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Se eliminó " + codigo + " de la tabla de tareas");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+   public static void deleteEvaluacion(String evaluacion, String materia) {
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "DELETE FROM agenda.evaluaciones WHERE evaluacion=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, evaluacion);
+            
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Se eliminó " + evaluacion + " de la lista de evaluaciones");
+            }
+            
+            setPromedio(materia, readPromedio(materia));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+   }
+   
+   public static void deleteTarea(String tarea) {
+       try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "DELETE FROM agenda.tareas WHERE tarea=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setString(1, tarea);
+            
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Se eliminó " + tarea + " de la lista de tareas");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+   }
+    
+    public static DefaultTableModel buildTableModel(String query){
         // Creamos vectores para almacenar la información y las columnas de las tablas
         Vector<Vector<Object>> data = new Vector<Vector<Object>>();
         Vector<String> columnNames = new Vector<String>();;

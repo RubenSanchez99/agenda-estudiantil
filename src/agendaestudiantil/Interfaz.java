@@ -1,15 +1,19 @@
 package agendaestudiantil;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import java.awt.Window;
+import java.awt.event.WindowAdapter;
+import javax.mail.MessagingException;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
-/**
- *
- * @author Manuel de Jesús
- */
 public class Interfaz extends javax.swing.JFrame {
 
     /**
@@ -17,6 +21,9 @@ public class Interfaz extends javax.swing.JFrame {
      */
     public Interfaz() {
         initComponents();
+        loadTableData(HorarioTable, "horario");
+        loadTableData(EvaluacionesTable, "evaluacion");
+        loadTableData(TareasTable, "tareas");
     }
 
     /**
@@ -29,27 +36,29 @@ public class Interfaz extends javax.swing.JFrame {
     private void initComponents() {
 
         jDialog1 = new javax.swing.JDialog();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
+        TabbedPaneInterfaz = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
-        SelecDias = new javax.swing.JComboBox<>();
-        SelecDia = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        comboBoxSemestre = new javax.swing.JComboBox<>();
+        comboBoxDia = new javax.swing.JComboBox<>();
+        btnAgregarMateria = new javax.swing.JButton();
+        btnEliminarMateria = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        HorarioTable = new javax.swing.JTable();
+        btnActualizar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        comboBoxSemestreEvaluacion = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        EvaluacionesTable = new javax.swing.JTable();
+        btnEvaluacion = new javax.swing.JButton();
+        btnActualizarEvaluaciones = new javax.swing.JButton();
+        btnImprimir = new javax.swing.JToggleButton();
         jPanel3 = new javax.swing.JPanel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        comboBoxTareas = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        TareasTable = new javax.swing.JTable();
+        btnAgregarTarea = new javax.swing.JButton();
+        btnEliminarTarea = new javax.swing.JButton();
+        btnActualizarTareas = new javax.swing.JButton();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -64,31 +73,49 @@ public class Interfaz extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        SelecDias.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semestre 1", "Semestre 2", "Semestre 3", "Semestre 4", "Semestre 5", "Semestre 7", "Semestre 8", "Semestre 9" }));
-        SelecDias.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelecDiasActionPerformed(evt);
+        TabbedPaneInterfaz.setName("Agenda Estudiantil"); // NOI18N
+        TabbedPaneInterfaz.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TabbedPaneInterfazFocusGained(evt);
             }
         });
 
-        SelecDia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabados", "Domingo" }));
-        SelecDia.addActionListener(new java.awt.event.ActionListener() {
+        comboBoxSemestre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semestre 1", "Semestre 2", "Semestre 3", "Semestre 4", "Semestre 5", "Semestre 7", "Semestre 8", "Semestre 9" }));
+        comboBoxSemestre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelecDiaActionPerformed(evt);
+                comboBoxSemestreActionPerformed(evt);
             }
         });
 
-        jButton1.setText("+");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        comboBoxDia.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabados", "Domingo" }));
+        comboBoxDia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                comboBoxDiaActionPerformed(evt);
             }
         });
 
-        jButton2.setText("-");
+        btnAgregarMateria.setText("+");
+        btnAgregarMateria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarMateriaActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(DB.buildTableModel("SELECT hora_inicio, hora_fin, codigo, nombre, aula FROM agenda.materias"));
-        jScrollPane3.setViewportView(jTable1);
+        btnEliminarMateria.setText("-");
+        btnEliminarMateria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarMateriaActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(HorarioTable);
+
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -96,69 +123,85 @@ public class Interfaz extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(SelecDia, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(comboBoxDia, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(97, 97, 97)
-                        .addComponent(SelecDias, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(comboBoxSemestre, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                        .addComponent(btnActualizar))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 537, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2)
-                            .addComponent(jButton1))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAgregarMateria, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addComponent(btnEliminarMateria, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SelecDias, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(SelecDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(comboBoxSemestre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboBoxDia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizar))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(13, 13, 13)
-                        .addComponent(jButton1)
-                        .addGap(154, 154, 154)
-                        .addComponent(jButton2))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(203, Short.MAX_VALUE))
+                        .addComponent(btnAgregarMateria)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminarMateria)))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Horario", jPanel1);
+        TabbedPaneInterfaz.addTab("Materias", jPanel1);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semestre 1", "Semestre 2", "Semestre 3", "Semestre 4", "Semestre 5", "Semestre 6", "Semestre 7", "Semestre 8", "Semestre 9", " " }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jPanel2.setName(""); // NOI18N
+
+        comboBoxSemestreEvaluacion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Semestre 1", "Semestre 2", "Semestre 3", "Semestre 4", "Semestre 5", "Semestre 6", "Semestre 7", "Semestre 8", "Semestre 9", " " }));
+        comboBoxSemestreEvaluacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                comboBoxSemestreEvaluacionActionPerformed(evt);
             }
         });
 
-        jTable2.setModel(DB.buildTableModel("SELECT codigo, maestro, promedio FROM agenda.materias"));
-        jTable2.setCellSelectionEnabled(true);
-        jScrollPane1.setViewportView(jTable2);
-        jTable2.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        EvaluacionesTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
 
-        jButton5.setText("+");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+            },
+            new String [] {
+
             }
-        });
+        ));
+        EvaluacionesTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(EvaluacionesTable);
+        EvaluacionesTable.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        jButton6.setText("-");
-
-        jButton7.setText("Evaluación");
-        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+        btnEvaluacion.setText("Evaluación");
+        btnEvaluacion.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButton7MouseClicked(evt);
+                btnEvaluacionMouseClicked(evt);
             }
         });
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        btnEvaluacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                btnEvaluacionActionPerformed(evt);
+            }
+        });
+
+        btnActualizarEvaluaciones.setText("Actualizar");
+        btnActualizarEvaluaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarEvaluacionesActionPerformed(evt);
+            }
+        });
+
+        btnImprimir.setText("Imprimir");
+        btnImprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirActionPerformed(evt);
             }
         });
 
@@ -167,160 +210,262 @@ public class Interfaz extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton5)
-                            .addComponent(jButton6)
-                            .addComponent(jButton7)))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(55, Short.MAX_VALUE))
+                        .addComponent(comboBoxSemestreEvaluacion, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 321, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnEvaluacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnActualizarEvaluaciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnImprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBoxSemestreEvaluacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizarEvaluaciones))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton5)
-                        .addGap(40, 40, 40)
-                        .addComponent(jButton6)
-                        .addGap(18, 18, Short.MAX_VALUE)
-                        .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(111, 111, 111))))
+                        .addComponent(btnEvaluacion, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnImprimir)))
+                .addGap(36, 36, 36))
         );
 
-        jTabbedPane1.addTab("Materias", jPanel2);
+        TabbedPaneInterfaz.addTab("Evaluaciones", jPanel2);
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hoy", "Mañana", "Esta semana", "Este Mes", "Este año", " " }));
-
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "Materia", "Tarea", "Entrega"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(jTable3);
-
-        jButton3.setText("+");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        comboBoxTareas.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hoy", "Mañana", "Esta semana", "Próxima semana", "Este mes", "Este año", "Todas" }));
+        comboBoxTareas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                comboBoxTareasActionPerformed(evt);
             }
         });
 
-        jButton4.setText("-");
+        jScrollPane2.setViewportView(TareasTable);
+
+        btnAgregarTarea.setText("+");
+        btnAgregarTarea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarTareaActionPerformed(evt);
+            }
+        });
+
+        btnEliminarTarea.setText("-");
+        btnEliminarTarea.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarTareaActionPerformed(evt);
+            }
+        });
+
+        btnActualizarTareas.setText("Actualizar");
+        btnActualizarTareas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarTareasActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(36, 36, 36)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3)
-                            .addComponent(jButton4)))
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(113, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 499, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(comboBoxTareas, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnActualizarTareas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAgregarTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEliminarTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBoxTareas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizarTareas))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addGap(40, 40, 40)
-                        .addComponent(jButton4)))
-                .addContainerGap(148, Short.MAX_VALUE))
+                        .addComponent(btnAgregarTarea)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminarTarea))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Tareas", jPanel3);
+        TabbedPaneInterfaz.addTab("Tareas", jPanel3);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(TabbedPaneInterfaz)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
+            .addComponent(TabbedPaneInterfaz)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    private void comboBoxSemestreEvaluacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxSemestreEvaluacionActionPerformed
+        loadTableData(EvaluacionesTable, "evaluacion");
+    }//GEN-LAST:event_comboBoxSemestreEvaluacionActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        AgregarHorarios add = new AgregarHorarios();
-        add.setVisible(true);
+    private void btnAgregarMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMateriaActionPerformed
+        AgregarMateriaDialog agregarDialog = new AgregarMateriaDialog(this, true);
         
-    }//GEN-LAST:event_jButton1ActionPerformed
+        agregarDialog.addWindowListener(new WindowAdapter() {
+            public void windowClosed(Window e) {
+                loadTableData(HorarioTable, "horario");
+                System.out.println("Se cerró el dialog");
+            }
+        });
+        agregarDialog.setVisible(true);
+    }//GEN-LAST:event_btnAgregarMateriaActionPerformed
 
-    private void SelecDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelecDiaActionPerformed
+    private void comboBoxDiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxDiaActionPerformed
+        loadTableData(HorarioTable, "horario");
+    }//GEN-LAST:event_comboBoxDiaActionPerformed
+
+    private void comboBoxSemestreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxSemestreActionPerformed
+        loadTableData(HorarioTable, "horario");
+    }//GEN-LAST:event_comboBoxSemestreActionPerformed
+
+    private void btnEvaluacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEvaluacionActionPerformed
+        String codigo = (String) EvaluacionesTable.getValueAt(EvaluacionesTable.getSelectedRow(), 0);
+        EvaluacionesDialog dialog = new EvaluacionesDialog(this, true);
+        dialog.setTitle(codigo);
+        dialog.setMateria(codigo);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_btnEvaluacionActionPerformed
+
+    private void btnEvaluacionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEvaluacionMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_SelecDiaActionPerformed
+    }//GEN-LAST:event_btnEvaluacionMouseClicked
 
-    private void SelecDiasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelecDiasActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SelecDiasActionPerformed
+    private void btnAgregarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarTareaActionPerformed
+        AgregarTarea agregarTareasDialog = new AgregarTarea(this, true);
+        agregarTareasDialog.setVisible(true);
+    }//GEN-LAST:event_btnAgregarTareaActionPerformed
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-        Promedios add = new Promedios();
-        add.setVisible(true);
-    }//GEN-LAST:event_jButton7ActionPerformed
+    private void btnEliminarMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMateriaActionPerformed
+        String codigo = (String) HorarioTable.getValueAt(HorarioTable.getSelectedRow(), 2);
+        DB.delete(codigo);
+        loadTableData(HorarioTable, "horario");
+    }//GEN-LAST:event_btnEliminarMateriaActionPerformed
 
-    private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7MouseClicked
+    private void TabbedPaneInterfazFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TabbedPaneInterfazFocusGained
+        loadTableData(HorarioTable, "horario");
+    }//GEN-LAST:event_TabbedPaneInterfazFocusGained
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-        AgregarMaterias add = new AgregarMaterias();
-        add.setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        loadTableData(HorarioTable, "horario");
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        AgregarTareas add = new AgregarTareas();
-        add.setVisible(true);
-        
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void btnActualizarEvaluacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarEvaluacionesActionPerformed
+        loadTableData(EvaluacionesTable, "evaluacion");
+    }//GEN-LAST:event_btnActualizarEvaluacionesActionPerformed
 
+    private void btnActualizarTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarTareasActionPerformed
+        loadTableData(TareasTable, "tareas");
+    }//GEN-LAST:event_btnActualizarTareasActionPerformed
+
+    private void comboBoxTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxTareasActionPerformed
+        loadTableData(TareasTable, "tareas");
+    }//GEN-LAST:event_comboBoxTareasActionPerformed
+
+    private void btnEliminarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarTareaActionPerformed
+       String tarea = (String) TareasTable.getValueAt(TareasTable.getSelectedRow(), 1);
+       DB.deleteTarea(tarea);
+       loadTableData(TareasTable, "tareas");
+    }//GEN-LAST:event_btnEliminarTareaActionPerformed
+
+    private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
+        try {
+            DB.conectar();
+            String dir = "C:\\Users\\Ruben\\Documents\\NetBeansProjects\\Proyecto Final POO\\agenda-estudiantil\\reporteKardex.jrxml";
+            JasperReport reporteJasper = JasperCompileManager.compileReport(dir);
+            JasperPrint mostrarReporte = JasperFillManager.fillReport(reporteJasper, null, DB.getConnection());
+            JasperViewer.viewReport(mostrarReporte);
+        } catch (JRException ex) {
+            JOptionPane.showMessageDialog(null, "Error al imprimir archivo");
+            ex.printStackTrace();
+        } finally {
+            DB.desconectar();
+        }
+    }//GEN-LAST:event_btnImprimirActionPerformed
+    
+    private void loadTableData(JTable table, String mode) {
+        //DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+        //tableModel.fireTableDataChanged();
+        //DefaultTableModel tableModel = (DefaultTableModel) HorarioTable.getModel();
+        //tableModel.fireTableRowsInserted();
+        switch (mode) {
+            case "horario":
+                table.setModel(DB.buildTableModel("SELECT hora_inicio, hora_fin, codigo, nombre, aula FROM agenda.materias WHERE FIND_IN_SET('"
+                + comboBoxDia.getSelectedItem().toString() + "', dias)>0 AND semestre="
+                + (comboBoxSemestre.getSelectedIndex() + 1) + " ORDER BY hora_inicio"));
+                break;
+            
+            case "evaluacion":
+                table.setModel(DB.buildTableModel("SELECT codigo, maestro, promedio FROM agenda.materias"
+                + " WHERE semestre=" + (comboBoxSemestreEvaluacion.getSelectedIndex() + 1)));
+                break;
+                
+            case "tareas":
+                switch(comboBoxTareas.getSelectedIndex()) {
+                    case 0: // Hoy
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE day(fecha_entrega) = day(curdate()) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    case 1: // Mañana
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE day(fecha_entrega) = day(curdate() + interval 1 day) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    case 2: // Esta semana
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE yearweek(fecha_entrega) = yearweek(now()) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    case 3: // Próxima semana
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE yearweek(fecha_entrega) = yearweek(now() + interval 1 week) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    case 4: // Este mes
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE month(fecha_entrega) = month(curdate()) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    case 5: // Este año
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas WHERE year(fecha_entrega) = year(curdate()) ORDER BY fecha_entrega"));
+                        break;
+                        
+                    default:
+                        table.setModel(DB.buildTableModel("SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado" 
+                        + " FROM agenda.tareas ORDER BY fecha_entrega"));
+                        break;
+                }                
+        }
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -357,17 +502,23 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> SelecDia;
-    private javax.swing.JComboBox<String> SelecDias;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JTable EvaluacionesTable;
+    private javax.swing.JTable HorarioTable;
+    private javax.swing.JTabbedPane TabbedPaneInterfaz;
+    private javax.swing.JTable TareasTable;
+    private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnActualizarEvaluaciones;
+    private javax.swing.JButton btnActualizarTareas;
+    private javax.swing.JButton btnAgregarMateria;
+    private javax.swing.JButton btnAgregarTarea;
+    private javax.swing.JButton btnEliminarMateria;
+    private javax.swing.JButton btnEliminarTarea;
+    private javax.swing.JButton btnEvaluacion;
+    private javax.swing.JToggleButton btnImprimir;
+    private javax.swing.JComboBox<String> comboBoxDia;
+    private javax.swing.JComboBox<String> comboBoxSemestre;
+    private javax.swing.JComboBox<String> comboBoxSemestreEvaluacion;
+    private javax.swing.JComboBox<String> comboBoxTareas;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -375,9 +526,5 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 }

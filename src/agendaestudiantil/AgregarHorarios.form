@@ -44,18 +44,11 @@
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="chkBoxLunes" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" attributes="0">
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="chkBoxJueves" min="-2" max="-2" attributes="0"/>
-                                          <Component id="chkBoxMartes" min="-2" max="-2" attributes="0"/>
-                                      </Group>
-                                      <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="chkBoxLunes" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkBoxJueves" min="-2" max="-2" attributes="0"/>
+                                  <Component id="chkBoxMartes" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Component id="chkBoxMiercoles" min="-2" max="-2" attributes="0"/>
@@ -67,23 +60,25 @@
                           <Component id="chkBoxSabado" min="-2" max="-2" attributes="0"/>
                           <Component id="chkBoxViernes" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="61" pref="105" max="32767" attributes="0"/>
+                      <EmptySpace min="61" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="labelCodigo" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="labelMateria" alignment="0" max="32767" attributes="0"/>
-                          <Component id="labelMaestro" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="labelAula" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="labelInicio" alignment="0" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="labelFin" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelCodigo" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelMaestro" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelAula" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="labelFin" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
+                          <Component id="labelInicio" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="comboBoxSemestre" pref="221" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="txtFin" pref="221" max="32767" attributes="0"/>
                               <Component id="txtNombre" alignment="1" max="32767" attributes="0"/>
@@ -92,22 +87,15 @@
                               <Component id="txtMaestro" alignment="1" max="32767" attributes="0"/>
                               <Component id="txtAula" alignment="1" max="32767" attributes="0"/>
                           </Group>
+                          <Component id="comboBoxSemestre" min="-2" pref="221" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
-                      <Component id="btnAgregar" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
+              <EmptySpace min="-2" pref="126" max="-2" attributes="0"/>
+              <Component id="btnAgregar" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -127,13 +115,13 @@
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtInicio" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="labelInicio" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="comboBoxSemestre" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="comboBoxSemestre" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="labelInicio" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtInicio" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">

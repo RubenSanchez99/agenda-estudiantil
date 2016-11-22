@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ab383ee7-3bb8-4592-8df1-455964ac10fc">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     materias.`codigo` AS materias_codigo,
+     materias.`nombre` AS materias_nombre,
+     materias.`semestre` AS materias_semestre,
+     materias.`promedio` AS materias_promedio,
+     materias.`maestro` AS materias_maestro
+FROM
+     `materias` materias]]>
+	</queryString>
+	<field name="materias_semestre" class="java.lang.Integer"/>
+	<field name="materias_codigo" class="java.lang.String"/>
+	<field name="materias_nombre" class="java.lang.String"/>
+	<field name="materias_maestro" class="java.lang.String"/>
+	<field name="materias_promedio" class="java.lang.Double"/>
+	<group name="materias_semestre">
+		<groupExpression><![CDATA[$F{materias_semestre}]]></groupExpression>
+		<groupHeader>
+			<band height="40">
+				<textField>
+					<reportElement style="SubTitle" x="47" y="13" width="506" height="24" forecolor="#CC0000" uuid="4dd5838f-ec61-4467-a98e-9ce8ecf24c79"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{materias_semestre}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement mode="Opaque" x="0" y="13" width="36" height="24" forecolor="#CCCCCC" backcolor="#CCCCCC" uuid="8810e285-2047-4c69-af3d-ce61a3ddf881"/>
+				</rectangle>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<image>
+				<reportElement x="275" y="0" width="300" height="64" uuid="96673414-34ab-486a-9fd5-50078381c30d"/>
+				<imageExpression><![CDATA["leaf_banner_red.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="263" height="33" uuid="a28d38f3-f495-4003-adc7-21cab00b743e"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Agenda estudiantil]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="117" y="46" width="157" height="22" uuid="dd8bff41-3440-41f9-a4b2-3ba3ad2887ac"/>
+				<text><![CDATA[Kárdex]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="4da7365e-963a-4faa-9475-600c8522b3ca"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="74" height="15" uuid="83c1cd75-3f73-402a-875f-f041a4864dde"/>
+				<text><![CDATA[Clave]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="74" y="19" width="202" height="15" uuid="5fcc8d91-3985-4365-93ea-7cc94d16fadc"/>
+				<text><![CDATA[Materia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="276" y="19" width="216" height="15" uuid="a0e32586-d977-43ad-9d72-695224ee2ad1"/>
+				<text><![CDATA[Maestro]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="492" y="19" width="60" height="15" uuid="087469a4-1d26-44b5-9efb-4446d7e132bc"/>
+				<text><![CDATA[Promedio]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="d5153f50-7cbe-47e5-a572-07257ad91842"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="74" height="15" uuid="7153e67e-596d-4462-9885-be21dfe378dc"/>
+				<textFieldExpression><![CDATA[$F{materias_codigo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="74" y="0" width="202" height="15" uuid="67761ba4-3017-474f-a545-ee05b623c630"/>
+				<textFieldExpression><![CDATA[$F{materias_nombre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="276" y="0" width="216" height="15" uuid="70488d1a-00d4-4a52-96df-4bc7c903ac82"/>
+				<textFieldExpression><![CDATA[$F{materias_maestro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="492" y="0" width="60" height="15" uuid="1a6c74bb-765c-43f8-a5e5-129e1ec20b37"/>
+				<textFieldExpression><![CDATA[$F{materias_promedio}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="e249debd-1f74-40d5-be81-1022bd66b77b"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="04933c86-76a1-417e-8776-aae8134ce828"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="70ff1763-6822-4b2f-a4fd-f3226e5f3725"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="7a32b172-582a-4c3d-8f09-b1bbc7c4149e"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

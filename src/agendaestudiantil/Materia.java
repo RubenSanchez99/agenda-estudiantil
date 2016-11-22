@@ -2,7 +2,11 @@ package agendaestudiantil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 public class Materia {
     private int id;
@@ -12,11 +16,11 @@ public class Materia {
     private Date hora_inicio;
     private Date hora_fin;
     private String maestro;
-    private boolean[] dias;
+    private ArrayList<String> dias;
     private String aula;
 
     public Materia(int id, String codigo, String nombre, int semestre, String hora_inicio,
-            String hora_fin, String maestro, boolean[] dias, String aula) {
+            String hora_fin, String maestro, ArrayList<String> dias, String aula) {
         this.id = id;
         this.codigo = codigo;
         this.nombre = nombre;
@@ -92,11 +96,20 @@ public class Materia {
         this.hora_fin = hora_fin;
     }
 
-    public boolean[] getDias() {
+    public ArrayList<String> getDias() {
         return dias;
     }
     
     public String getDiasFormat() {
+        String cadenaDias = "";
+        Iterator<String> iterator = dias.iterator();
+        while(iterator.hasNext()) {
+            cadenaDias += iterator.next() + ((iterator.hasNext()) ? "," : ""); 
+        }
+        return cadenaDias;
+    }
+    
+    /*public String getDiasFormat() {
         String diasFormat = "";
         for (boolean dia : dias) {
             if (dia) {
@@ -106,19 +119,24 @@ public class Materia {
             }
         }
         return diasFormat;
-    }
+    }*/
 
-    public void setDias(boolean[] dias) {
+    public void setDias(ArrayList<String> dias) {
         this.dias = dias;
     }
     
     public void setDiasFormat(String dias) {
+        String[] arrDias = dias.split(",");
+        this.dias = new ArrayList<String>(Arrays.asList(arrDias));
+    }
+    
+    /*public void setDiasFormat(String dias) {
         this.dias = new boolean[7];
         String[] arrDias = dias.split("");
         for (int i = 0; i < 7; i++) {
             this.dias[i] = arrDias[i].equals("1");
         }
-    }
+    }*/
 
     public String getAula() {
         return aula;
