@@ -5,6 +5,8 @@
  */
 package agendaestudiantil;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author Ruben
@@ -127,19 +129,31 @@ public class AgregarEvaluacion extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        Evaluacion ev = new Evaluacion();
-        ev.setMateria(this.materia);
-        ev.setEvaluacion(txtEvaluacion.getText());
-        ev.setPorcentaje(Double.valueOf(txtPorcentaje.getText()));
-        ev.setCalificacion(Double.valueOf(txtCalificacion.getText()));
-        ev.setCalificacionTotal();
+        if (txtEvaluacion.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el nombre del criterio de evaluación");
+        } else if (txtPorcentaje.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el porcentaje de calificación de este criterio");
+        } else if (txtCalificacion.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese su calificación en este criterio");
+        } else {
+            try {
+                Evaluacion ev = new Evaluacion();
+                ev.setMateria(this.materia);
+                ev.setEvaluacion(txtEvaluacion.getText());
+                ev.setPorcentaje(Double.valueOf(txtPorcentaje.getText()));
+                ev.setCalificacion(Double.valueOf(txtCalificacion.getText()));
+                ev.setCalificacionTotal();
         
-        DB.write(ev, "INSERT INTO agenda.evaluaciones"
-                + " (materia, evaluacion, porcentaje, calificacion, calificacion_total)" 
-                + " VALUES (?, ?, ?, ?, ?)");
+                DB.write(ev);
         
-        this.setVisible(false);
-        this.dispose();
+                this.setVisible(false);
+                this.dispose();
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Solo se permiten valores numéricos en el procentaje y la calificación");
+            }
+            
+        }
+        
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     public void setMateria(String materia) {

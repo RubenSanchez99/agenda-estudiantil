@@ -5,25 +5,9 @@
  */
 package agendaestudiantil;
 
-import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 
 /**
  *
@@ -38,74 +22,6 @@ public class AgregarTarea extends javax.swing.JDialog {
     public AgregarTarea(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
-        
-        
-        /*
-        JPanel addressPanel = new JPanel();
-        Border border = addressPanel.getBorder();
-        Border margin = new EmptyBorder(10, 10, 10, 10);
-        addressPanel.setBorder(new CompoundBorder(border, margin));
-        
-        GridBagLayout panelGridBagLayout = new GridBagLayout();
-        panelGridBagLayout.columnWidths = new int[]{86, 86, 0};
-        panelGridBagLayout.rowHeights = new int[]{20, 20, 20, 20, 20, 0};
-        panelGridBagLayout.columnWeights = new double[]{0.0, 1.0, Double.MIN_VALUE};
-        panelGridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        addressPanel.setLayout(panelGridBagLayout);
-
-        addLabelAndTextField("City:", 0, addressPanel);
-        addLabelAndTextField("Street:", 1, addressPanel);
-        addLabelAndTextField("State:", 2, addressPanel);
-        addLabelAndTextField("Phone:", 3, addressPanel);
-        addLabelAndTextField("Mail:", 4, addressPanel);
-        this.add(addressPanel);
-        
-        
-        JLabel lblFecha = new JLabel();
-        lblFecha.setText("Fecha de entrega");
-        
-        UtilDateModel model =  new UtilDateModel();
-        model.setDate(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
-        Properties p = new Properties();
-        p.put("text.today", "Hoy");
-        p.put("text.month", "Mes");
-        p.put("text.year", "Año");
-        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
-        lblFecha.setLabelFor(datePicker);
-        addressPanel.add(lblFecha);
-        addressPanel.add(datePicker);
-        
-        JLabel lblTarea = new JLabel();
-        lblTarea.setText("Tarea");
-        
-        JTextField txtTarea = new JTextField();
-        lblTarea.setLabelFor(txtTarea);
-        addressPanel.add(lblTarea);
-        addressPanel.add(txtTarea);
-        
-        this.pack();*/
-    }
-
-    private void addLabelAndTextField(String labelText, int yPos, Container addressPanel) {
-
-        JLabel faxLabel = new JLabel(labelText);
-        GridBagConstraints gridBagConstraintForLabel = new GridBagConstraints();
-        gridBagConstraintForLabel.fill = GridBagConstraints.BOTH;
-        gridBagConstraintForLabel.insets = new Insets(0, 0, 5, 5);
-        gridBagConstraintForLabel.gridx = 0;
-        gridBagConstraintForLabel.gridy = yPos;
-        addressPanel.add(faxLabel, gridBagConstraintForLabel);
-
-        JTextField textField = new JTextField();
-        GridBagConstraints gridBagConstraintForTextField = new GridBagConstraints();
-        gridBagConstraintForTextField.fill = GridBagConstraints.BOTH;
-        gridBagConstraintForTextField.insets = new Insets(0, 0, 5, 0);
-        gridBagConstraintForTextField.gridx = 1;
-        gridBagConstraintForTextField.gridy = yPos;
-        addressPanel.add(textField, gridBagConstraintForTextField);
-        textField.setColumns(10);
     }
 
     /**
@@ -236,13 +152,22 @@ public class AgregarTarea extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAceptarActionPerformed
-        Tarea t = new Tarea();
-        t.setTarea(txtTarea.getText());
-        t.setMateria((String) comboBoxMateria.getSelectedItem());
-        t.setFechaEntrega(datePickerEntrega.getDate());
-        t.setFechaRecordatorio(datePickerReminder.getDate());
+        if (txtTarea.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el nombre de la tarea");
+        } else if (datePickerEntrega.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Ingrese la fecha de entrega de la tarea");
+        } else if (datePickerReminder.getDate() == null) {
+            JOptionPane.showMessageDialog(null, "Ingrese la fecha del recordatorio de la tarea");
+        } else {
+            Tarea t = new Tarea();
+            t.setTarea(txtTarea.getText());
+            t.setMateria((String) comboBoxMateria.getSelectedItem());
+            t.setFechaEntrega(datePickerEntrega.getDate());
+            t.setFechaRecordatorio(datePickerReminder.getDate());
+                
         DB.write(t);
         this.dispose();
+        }
     }//GEN-LAST:event_btnAceptarActionPerformed
 
     private void txtTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTareaActionPerformed

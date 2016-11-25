@@ -5,8 +5,6 @@
  */
 package agendaestudiantil;
 
-import java.awt.Container;
-import javax.swing.JFrame;
 import javax.swing.JTable;
 
 /**
@@ -115,6 +113,7 @@ public class EvaluacionesDialog extends javax.swing.JDialog {
     private void btnEliminarEvaluacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarEvaluacionActionPerformed
         String evaluacion = (String) EvaluacionesTable.getValueAt(EvaluacionesTable.getSelectedRow(), 0);
         DB.deleteEvaluacion(evaluacion, this.materia);
+        DB.setPromedio(this.materia, DB.readPromedio(this.materia));
         loadTableData(EvaluacionesTable);
     }//GEN-LAST:event_btnEliminarEvaluacionActionPerformed
 

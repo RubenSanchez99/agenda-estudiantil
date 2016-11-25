@@ -240,52 +240,70 @@ public class AgregarMateriaDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        Materia m = new Materia();
-        ArrayList<String> dias = new ArrayList<>();
+        if (txtNombre.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el nombre de la materia");
+        } else if (txtCodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el codigo de la materia");
+        } else if (txtInicio.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la hora de inicio");
+        } else if (txtFin.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la hora de fin");
+        } else if (txtMaestro.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el nombre del maestro");
+        } else if (txtAula.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el aula de la materia");
+        } else if (!(chkBoxLunes.isSelected() || chkBoxMartes.isSelected() || chkBoxMiercoles.isSelected()
+                || chkBoxJueves.isSelected() || chkBoxViernes.isSelected() || chkBoxSabado.isSelected() || chkBoxDomingo.isSelected())) {
+            JOptionPane.showMessageDialog(null, "Elija los días en los que asiste a esta materia");
+        } else {
+            Materia m = new Materia();
+            ArrayList<String> dias = new ArrayList<>();
 
-        m.setNombre(txtNombre.getText());
-        m.setCodigo(txtCodigo.getText());
-        m.setSemestre( Integer.valueOf( (String) comboBoxSemestre.getSelectedItem()));
-        try {
-            m.setHora_inicio(new SimpleDateFormat("HH:mm").parse(txtInicio.getText()));
-            m.setHora_fin(new SimpleDateFormat("HH:mm").parse(txtFin.getText()));
-        } catch (ParseException e) {
-            JOptionPane.showMessageDialog(null, "Ingrese la hora en formato HH:mm");
+            m.setNombre(txtNombre.getText());
+            m.setCodigo(txtCodigo.getText());
+            m.setSemestre(Integer.valueOf((String) comboBoxSemestre.getSelectedItem()));
+            try {
+                m.setHora_inicio(new SimpleDateFormat("HH:mm").parse(txtInicio.getText()));
+                m.setHora_fin(new SimpleDateFormat("HH:mm").parse(txtFin.getText()));
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(null, "Ingrese la hora en formato HH:mm");
+            }
+            m.setMaestro(txtMaestro.getText());
+
+            if (chkBoxLunes.isSelected()) {
+                dias.add("Lunes");
+            }
+            if (chkBoxMartes.isSelected()) {
+                dias.add("Martes");
+            }
+            if (chkBoxMiercoles.isSelected()) {
+                dias.add("Miércoles");
+            }
+            if (chkBoxJueves.isSelected()) {
+                dias.add("Jueves");
+            }
+            if (chkBoxViernes.isSelected()) {
+                dias.add("Viernes");
+            }
+            if (chkBoxSabado.isSelected()) {
+                dias.add("Sábado");
+            }
+            if (chkBoxDomingo.isSelected()) {
+                dias.add("Domingo");
+            }
+
+            m.setDias(dias);
+
+            m.setAula(txtAula.getText());
+
+            DB.write(m);
+
+            // TODO: Actualizar tabla al cerrar esta ventana
+            this.setVisible(false);
+            this.dispose();
         }
-        m.setMaestro(txtMaestro.getText());
-        //m.setDiasFormat("0000000");
-        
-        if (chkBoxLunes.isSelected())
-            dias.add("Lunes");
-        if (chkBoxMartes.isSelected())
-            dias.add("Martes");
-        if (chkBoxMiercoles.isSelected())
-            dias.add("Miércoles");
-        if (chkBoxJueves.isSelected())
-            dias.add("Jueves");
-        if (chkBoxViernes.isSelected())
-            dias.add("Viernes");
-        if (chkBoxSabado.isSelected())
-            dias.add("Sábado");
-        if (chkBoxDomingo.isSelected())
-            dias.add("Domingo");
-        
-        m.setDias(dias);
-        
-        for (String d : m.getDias()) {
-            System.out.println(d);
-        }
-        
-        System.out.println(m.getDiasFormat());
-        
-        m.setAula(txtAula.getText());
 
-        DB.write(m, "INSERT INTO agenda.materias (codigo, nombre, semestre, hora_inicio, hora_fin, maestro, dias, aula)"
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
-        // TODO: Actualizar tabla al cerrar esta ventana
-        this.setVisible(false);
-        this.dispose();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void comboBoxSemestreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxSemestreActionPerformed
@@ -313,7 +331,7 @@ public class AgregarMateriaDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        
+
     }//GEN-LAST:event_formWindowClosing
 
     /**

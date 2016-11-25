@@ -2,11 +2,11 @@ package agendaestudiantil;
 
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
+import java.util.InputMismatchException;
+import java.util.List;
 import javax.mail.MessagingException;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -59,6 +59,8 @@ public class Interfaz extends javax.swing.JFrame {
         btnAgregarTarea = new javax.swing.JButton();
         btnEliminarTarea = new javax.swing.JButton();
         btnActualizarTareas = new javax.swing.JButton();
+        btnEnviar = new javax.swing.JButton();
+        btnAjustesCorreo = new javax.swing.JButton();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -272,6 +274,20 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
+
+        btnAjustesCorreo.setText("Ajustes");
+        btnAjustesCorreo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAjustesCorreoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -285,7 +301,9 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnActualizarTareas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAgregarTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnEliminarTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEliminarTarea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAjustesCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -300,7 +318,11 @@ public class Interfaz extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnAgregarTarea)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEliminarTarea))
+                        .addComponent(btnEliminarTarea)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEnviar)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAjustesCorreo))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
@@ -381,6 +403,16 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_btnActualizarEvaluacionesActionPerformed
 
     private void btnActualizarTareasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarTareasActionPerformed
+        List<Tarea> tareasPorRecordar = DB.getTodayTareas();
+        for (Tarea t : tareasPorRecordar) {
+            try {
+                Mail.sendMail(t);
+            } catch(MessagingException e) {
+                JOptionPane.showMessageDialog(null, "Error al enviar recordatorio");
+            } catch (InputMismatchException i) {
+                JOptionPane.showMessageDialog(null, "Configure su correo para recibir los recordatorios");
+            }
+        }
         loadTableData(TareasTable, "tareas");
     }//GEN-LAST:event_btnActualizarTareasActionPerformed
 
@@ -397,7 +429,7 @@ public class Interfaz extends javax.swing.JFrame {
     private void btnImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirActionPerformed
         try {
             DB.conectar();
-            String dir = "C:\\Users\\Ruben\\Documents\\NetBeansProjects\\Proyecto Final POO\\agenda-estudiantil\\reporteKardex.jrxml";
+            String dir = "../../../reporteKardex.jrxml";
             JasperReport reporteJasper = JasperCompileManager.compileReport(dir);
             JasperPrint mostrarReporte = JasperFillManager.fillReport(reporteJasper, null, DB.getConnection());
             JasperViewer.viewReport(mostrarReporte);
@@ -408,12 +440,21 @@ public class Interfaz extends javax.swing.JFrame {
             DB.desconectar();
         }
     }//GEN-LAST:event_btnImprimirActionPerformed
+
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        /*try {
+            sendMail();
+        } catch (MessagingException e) {
+            JOptionPane.showMessageDialog(null, "Error al enviar correo");
+        }*/
+    }//GEN-LAST:event_btnEnviarActionPerformed
+
+    private void btnAjustesCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAjustesCorreoActionPerformed
+        AjustesCorreoDialog ajustesDialog = new AjustesCorreoDialog(this, true);
+        ajustesDialog.setVisible(true);
+    }//GEN-LAST:event_btnAjustesCorreoActionPerformed
     
     private void loadTableData(JTable table, String mode) {
-        //DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-        //tableModel.fireTableDataChanged();
-        //DefaultTableModel tableModel = (DefaultTableModel) HorarioTable.getModel();
-        //tableModel.fireTableRowsInserted();
         switch (mode) {
             case "horario":
                 table.setModel(DB.buildTableModel("SELECT hora_inicio, hora_fin, codigo, nombre, aula FROM agenda.materias WHERE FIND_IN_SET('"
@@ -511,8 +552,10 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JButton btnActualizarTareas;
     private javax.swing.JButton btnAgregarMateria;
     private javax.swing.JButton btnAgregarTarea;
+    private javax.swing.JButton btnAjustesCorreo;
     private javax.swing.JButton btnEliminarMateria;
     private javax.swing.JButton btnEliminarTarea;
+    private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnEvaluacion;
     private javax.swing.JToggleButton btnImprimir;
     private javax.swing.JComboBox<String> comboBoxDia;

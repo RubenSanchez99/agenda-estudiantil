@@ -43,9 +43,11 @@ public class DB {
         return conn;
     }
     
-    public static void write(Materia materia, String query) {        
+    public static void write(Materia materia) {        
         // Usamos un try-with-resources para abrir y cerrar la conexión automáticamente
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "INSERT INTO agenda.materias (codigo, nombre, semestre, hora_inicio, hora_fin, maestro, dias, aula)"
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(query);
             
             statement.setString(1, materia.getCodigo());
@@ -66,8 +68,11 @@ public class DB {
         }
     }
     
-    public static void write(Evaluacion ev, String query) {
+    public static void write(Evaluacion ev) {
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "INSERT INTO agenda.evaluaciones"
+                + " (materia, evaluacion, porcentaje, calificacion, calificacion_total)" 
+                + " VALUES (?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(query);
             
             statement.setString(1, ev.getMateria());
@@ -162,21 +167,6 @@ public class DB {
         }
     }
     
-    /*public static void writePromedio(String materia, double promedio) {
-        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
-            String query = "UPDATE promedio IN ";
-            
-            PreparedStatement statement = conn.prepareStatement(query);
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                System.out.println("Se han escrito en la base de datos");
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    
-    }*/
-    
     public static void createTable(String codigo) {
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
             String query = "CREATE TABLE " + codigo + " ("
@@ -233,6 +223,33 @@ public class DB {
         return m;
     }
     
+    public static List<Tarea> getTodayTareas() {
+        List<Tarea> tareas = new ArrayList<Tarea>();
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "SELECT materia, tarea, fecha_entrega, fecha_recordatorio, recordatorio_enviado "
+                    + "FROM agenda.tareas "
+                    + "WHERE day(fecha_recordatorio) = day(curdate()) AND recordatorio_enviado=false";
+                        
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            
+                        
+            while(result.next()) {
+                Tarea t = new Tarea();
+                t.setMateria(result.getString(1));
+                t.setTarea(result.getString(2));
+                t.setFechaEntrega(result.getDate(3));
+                t.setFechaRecordatorio(result.getDate(4));
+                
+                tareas.add(t);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        
+        return tareas;
+    }
+    
     public static String[] getAllMaterias() {
         Vector<String> materias = new Vector<String>();
         try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
@@ -267,6 +284,22 @@ public class DB {
             ex.printStackTrace();
         }
         return promedio;
+    }
+    
+    public static void setCorreoEnviado(String tarea) {
+        try (Connection conn = DriverManager.getConnection(dbURL, username, password)){
+            String query = "UPDATE agenda.tareas SET recordatorio_enviado=1 WHERE tarea=?";
+            PreparedStatement statement = conn.prepareStatement(query);
+            
+            statement.setString(1, tarea);
+            
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Se ha actualizado el estado de " + tarea);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public static void delete(String codigo) {
