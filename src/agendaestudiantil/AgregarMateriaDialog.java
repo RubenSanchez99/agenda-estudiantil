@@ -246,8 +246,12 @@ public class AgregarMateriaDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(null, "Ingrese el codigo de la materia");
         } else if (txtInicio.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese la hora de inicio");
+        } else if (!txtInicio.getText().matches("([01]?[0-9]|2[0-3]):[0-5][0-9]")) {
+            JOptionPane.showMessageDialog(null, "Ingrese la hora de inicio en formato HH:mm de 24 horas");
         } else if (txtFin.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese la hora de fin");
+        } else if (!txtFin.getText().matches("([01]?[0-9]|2[0-3]):[0-5][0-9]")) {
+            JOptionPane.showMessageDialog(null, "Ingrese la hora de fin en formato HH:mm de 24 horas");
         } else if (txtMaestro.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese el nombre del maestro");
         } else if (txtAula.getText().isEmpty()) {
